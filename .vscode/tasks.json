@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "db:dev:restart",
+			"problemMatcher": [],
+			"label": "npm: db:dev:restart",
+			"detail": "yarn db:dev:rm && yarn db:dev:up && sleep 1 && yarn prisma:dev:deploy"
+		}
+	]
+}
