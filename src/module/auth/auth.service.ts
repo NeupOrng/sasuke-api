@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { CreateUserReqeust } from "./model";
+import { CreateUserReqeust, CustomerSignInRequest } from "./model";
 import HashService from "src/utils/hash/hash.service";
-import { CreateUserDto } from "src/model/mainRepository";
+import { CreateUserDto, UserDto } from "src/model/mainRepository";
 import MainRepository from "src/repository/mainRepository/mainRepository.service";
 import BaseApiResponse from "src/model/apiResponse";
+import { EnumApiResponseCode, EnumApiResponseMessage } from "src/enum/enumResponseMessage";
 
 @Injectable()
 export class AuthService {
@@ -13,11 +14,17 @@ export class AuthService {
     private _mainRepository: MainRepository
     ){}
 
-  public async signin(dto: CreateUserReqeust) {
-    return {
-      Data: 'user',
-      Message: 'success'
-    };
+  public async CustomerLogin(request: CustomerSignInRequest): Promise<BaseApiResponse<UserDto>>{
+    const targetUser = await this._mainRepository.SignInUser(request);
+    if (targetUser === null) return new BaseApiResponse<UserDto>(null, EnumApiResponseMessage.NoUser, EnumApiResponseCode.NoUser);
+    
+    if(!await this._hashService.Compare(request.Password, targetUser.Password)) return new BaseApiResponse<UserDto>(
+      null,
+      EnumApiResponseMessage.IncorrectPawssword,
+      EnumApiResponseCode.IncorrectPawssword
+      );
+    
+    return new BaseApiResponse<UserDto>(new UserDto(targetUser), EnumApiResponseMessage.Success, EnumApiResponseCode.Success);
   }
 
 

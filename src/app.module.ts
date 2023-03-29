@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AuthModule } from './module/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MainRepositoryModule } from './repository/mainRepository/mainRepository.module';
@@ -14,6 +14,7 @@ import { HashUtilModule } from './utils/hash/hash.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CacheModule.register(),
   ],
 })
 export class AppModule { }

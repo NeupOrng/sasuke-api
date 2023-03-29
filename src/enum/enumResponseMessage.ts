@@ -4,7 +4,8 @@ enum EnumApiResponseMessage {
   NoUser = 'user not found',
   DuplicateUser = 'duplicate user',
   DuplicateOn = 'duplicate on ',
-  DbError = 'Database Exception'
+  DbError = 'Database Exception',
+  IncorrectPawssword = 'Incorrect Password'
 }
 
 enum EnumApiResponseCode {
@@ -12,7 +13,8 @@ enum EnumApiResponseCode {
   NoAuth = 401,
   NoUser = 403,
   DuplicateUser = 1000,
-  InternalError = 500
+  InternalError = 500,
+  IncorrectPawssword = 2000
 }
 
 export {

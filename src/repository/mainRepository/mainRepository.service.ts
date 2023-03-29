@@ -5,11 +5,16 @@ import { CreateUserDto, UserDto } from "src/model/mainRepository";
 import BaseApiResponse from "src/model/apiResponse";
 import { EnumApiResponseCode, EnumApiResponseMessage } from "src/enum/enumResponseMessage";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { CustomerSignInRequest } from "src/module/auth/model";
+import { Users } from "@prisma/client";
+import HashService from "src/utils/hash/hash.service";
 
 @Injectable()
 class MainRepository extends BaseRepository
 {
-  constructor(_configService: ConfigService)
+  constructor(
+    private _configService: ConfigService,
+    )
   {
     super(_configService.get('MAIN_DATABASE_URL'))
   }
@@ -38,6 +43,18 @@ class MainRepository extends BaseRepository
         }
       }
       return new BaseApiResponse<null>(null, EnumApiResponseMessage.DbError, EnumApiResponseCode.InternalError);
+    }
+  }
+
+  public async SignInUser(request: CustomerSignInRequest): Promise<Users> {
+    try {
+      return await this.users.findFirst({where: {
+        Email: request.Email
+      }})
+    }
+    catch(ex) {
+      console.error(`[${EnumApiResponseMessage.DbError}] ${ex}`);
+      return null;
     }
   }
 
