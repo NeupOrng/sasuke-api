@@ -11,15 +11,15 @@ datasource db {
 }
 
 model Users {
-  UserId      String    @id @default(uuid())
-  Username    String    @unique
-  CreatedOn   DateTime  @default(now())
+  UserId      String   @id @default(uuid())
+  Username    String   @unique
+  CreatedOn   DateTime @default(now())
   CreatedBy   String
-  Status      Int @default(1)
+  Status      Int      @default(1)
   ModifiedOn  DateTime @default(now())
   ModifiedBy  String
-  Email       String    @unique
+  Email       String   @unique
   Password    String
   PhoneNumber String?
+  Profile     String?
 }
-

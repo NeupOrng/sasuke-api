@@ -1,0 +1,1 @@
+export { IHashService } from './hash.interface';

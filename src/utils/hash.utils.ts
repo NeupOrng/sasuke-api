@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { IHashService } from './interface/index.interface';
 
 @Injectable()
-export default class HashService {
-  private saltOrRounds = 10;
+export default class HashService implements IHashService {
+  private readonly saltOrRounds = 10;
 
   async Hash(password: string): Promise<string> {
     return await bcrypt.hash(password, this.saltOrRounds);

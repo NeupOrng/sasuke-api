@@ -1,13 +1,14 @@
 import { ConfigService } from "@nestjs/config";
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import BaseRepository from "../baseRepository";
 import { CreateUserDto, UserDto } from "src/model/mainRepository";
 import BaseApiResponse from "src/model/apiResponse";
 import { EnumApiResponseCode, EnumApiResponseMessage } from "src/enum/enumResponseMessage";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { CustomerSignInRequest } from "src/module/auth/model";
-import { Users } from "@prisma/client";
-import HashService from "src/utils/hash/hash.service";
+import { Prisma, Users } from "@prisma/client";
+import HashService from "src/utils/hash.utils";
+import { DbException } from "src/exception/DbException";
 
 @Injectable()
 class MainRepository extends BaseRepository
@@ -19,7 +20,43 @@ class MainRepository extends BaseRepository
     super(_configService.get('MAIN_DATABASE_URL'))
   }
 
-  public async CreateUser(createUserDto: CreateUserDto): Promise<BaseApiResponse<null>>
+  public async UpdateUser(updateUserRequest: Users): Promise<Users> {
+    try {
+      const user = await this.users.update({
+        where: {
+          UserId: updateUserRequest.UserId
+        },
+        data: {
+          Status: updateUserRequest.Status,
+          Profile: updateUserRequest.Profile,
+          Email: updateUserRequest.Email,
+          ModifiedOn: new Date(),
+          ModifiedBy: updateUserRequest.ModifiedBy,
+        }
+      });
+
+      return user;
+    }
+    catch {
+      return null;
+    }
+  }
+
+  public async GetUserByUsername(username: string): Promise<Users> {
+    try {
+      const targetUser = await this.users.findFirst({
+        where: {
+          Username: username,
+        }
+      });
+      return targetUser;
+    }
+    catch {
+      return null;
+    }
+  }
+
+  public async CreateUser(createUserDto: CreateUserDto): Promise<Users>
   {
     try {
       const newUser = await this.users.create( {
@@ -33,16 +70,10 @@ class MainRepository extends BaseRepository
           ModifiedOn: createUserDto.ModifiedOn
         }
       });
-      return new BaseApiResponse<null>(null, EnumApiResponseMessage.Success, EnumApiResponseCode.Success)
+      return newUser;
     }
     catch(ex) {
-      if(ex instanceof PrismaClientKnownRequestError)
-      {
-        if(ex.code === 'P2002') {
-          return new BaseApiResponse<null>(null, `${EnumApiResponseMessage.DuplicateOn}${ex.meta.target}`, EnumApiResponseCode.DuplicateUser);
-        }
-      }
-      return new BaseApiResponse<null>(null, EnumApiResponseMessage.DbError, EnumApiResponseCode.InternalError);
+      throw new DbException(ex);
     }
   }
 

@@ -43,3 +43,26 @@ export class UserDto {
     this.ModifiedOn = user.ModifiedOn;
   }
 }
+
+export class UserDtoResponse extends UserDto{
+  @ApiProperty({ name: "Token" })
+  Token: string;
+
+  toJSON() {
+    return {
+      Username: this.Username,
+      Email: this.Email,
+      Status: this.Status,
+      CreatedOn: this.CreatedOn,
+      ModifiedOn: this.ModifiedOn,
+      IsNewUser: this.IsNewUser,
+      Token: this.Token,
+    };
+  }
+
+  constructor(user: Users, token: string) {
+    super(user);
+
+    this.Token = token;
+  }
+}
