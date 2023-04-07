@@ -6,12 +6,14 @@ import { UserModule } from './module/user/user.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadFileModule } from './module/uploadFile/uploadFile.module';
+import { ProductModule } from './module/product/product.module';
 
 @Module({
   imports: [
     AuthModule,
     MainRepositoryModule,
     UserModule,
+    ProductModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

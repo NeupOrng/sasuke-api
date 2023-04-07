@@ -1,5 +1,7 @@
 import { INestApplication, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, PrismaPromise } from '@prisma/client';
+import { Sql } from '@prisma/client/runtime';
+import { DbException } from 'src/exception/DbException';
 
 export default abstract class BaseRepository extends PrismaClient implements OnModuleInit{
   async onModuleInit() {
@@ -10,6 +12,24 @@ export default abstract class BaseRepository extends PrismaClient implements OnM
     this.$on('beforeExit', async () => {
       await app.close();
     });
+  }
+
+  ExecuteScript(script: string): PrismaPromise<number> {
+    try {
+      return this.$executeRawUnsafe(script);
+    }
+    catch(ex) {
+      throw new DbException(ex);
+    }
+  }
+
+  QueryScript<T = any>(script: string): PrismaPromise<T> {
+    try {
+      return this.$queryRawUnsafe<T>(script)
+    }
+    catch(ex) {
+      throw new DbException(ex);
+    }
   }
 
   constructor (connectionString: string) {

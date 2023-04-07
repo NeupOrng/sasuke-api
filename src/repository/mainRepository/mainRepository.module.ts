@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import HashService from 'src/utils/hash.utils';
-import MainRepository from './mainRepository.service';
+import { UsersRepository, CategoriesRepository } from './tables';
 
 @Module({
-  providers: [MainRepository, HashService],
+  providers: [UsersRepository, HashService, CategoriesRepository],
 })
 export class MainRepositoryModule {}

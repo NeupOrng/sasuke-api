@@ -18,6 +18,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Authentication')
     .addTag('User')
+    .addTag('Product')
+    .addTag('FileUpload')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

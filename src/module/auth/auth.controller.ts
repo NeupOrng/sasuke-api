@@ -4,9 +4,11 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserReqeust, CustomerSignInRequest } from "./model";
 import BaseApiResponse from "src/model/apiResponse";
 import { UserDto, UserDtoResponse } from "src/model/mainRepository";
+import { ExceptionsFilter } from "src/filters/exception.filter";
 
 @Controller('api/auth')
 @ApiTags('Authentication')
+@UseFilters(ExceptionsFilter)
 export class AuthController {
   constructor(private _authService: AuthService) { }
 

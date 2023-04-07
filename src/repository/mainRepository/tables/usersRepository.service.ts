@@ -1,6 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import BaseRepository from "../baseRepository";
+import BaseRepository from "../../baseRepository";
 import { CreateUserDto, UserDto } from "src/model/mainRepository";
 import BaseApiResponse from "src/model/apiResponse";
 import { EnumApiResponseCode, EnumApiResponseMessage } from "src/enum/enumResponseMessage";
@@ -11,11 +11,11 @@ import HashService from "src/utils/hash.utils";
 import { DbException } from "src/exception/DbException";
 
 @Injectable()
-class MainRepository extends BaseRepository
+export class UsersRepository extends BaseRepository
 {
   constructor(
     private _configService: ConfigService,
-    )
+  )
   {
     super(_configService.get('MAIN_DATABASE_URL'))
   }
@@ -36,6 +36,20 @@ class MainRepository extends BaseRepository
       });
 
       return user;
+    }
+    catch {
+      return null;
+    }
+  }
+
+  public async GetUserByUserId(userId: number): Promise<Users> {
+    try {
+      const targetUser = await this.users.findFirst({
+        where: {
+          UserId: userId,
+        }
+      });
+      return targetUser;
     }
     catch {
       return null;
@@ -100,5 +114,3 @@ class MainRepository extends BaseRepository
     }
   }
 }
-
-export default MainRepository;

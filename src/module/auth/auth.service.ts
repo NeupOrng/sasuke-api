@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { CreateUserReqeust, CustomerSignInRequest } from "./model";
 import { CreateUserDto, UserDto, UserDtoResponse } from "src/model/mainRepository";
-import MainRepository from "src/repository/mainRepository/mainRepository.service";
+import { UsersRepository } from "src/repository/mainRepository/tables";
 import BaseApiResponse from "src/model/apiResponse";
 import { EnumApiResponseCode, EnumApiResponseMessage } from "src/enum/enumResponseMessage";
 import { IHashService } from "src/utils/interface/hash.interface";
@@ -16,7 +16,7 @@ export class AuthService {
   private readonly _jwtService: JwtService
 
   public constructor (
-    private readonly _mainRepository: MainRepository,
+    private readonly _mainRepository: UsersRepository,
     jwtService: JwtService,
     hashService: HashService
     ){

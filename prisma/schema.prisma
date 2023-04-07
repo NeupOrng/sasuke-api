@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Users {
-  UserId      String   @id @default(uuid())
+  UserId      Int      @id @default(autoincrement())
   Username    String   @unique
   CreatedOn   DateTime @default(now())
   CreatedBy   String
@@ -23,3 +23,37 @@ model Users {
   PhoneNumber String?
   Profile     String?
 }
+
+model Categories {
+  CategoryId        Int       @id @default(autoincrement())
+  CategoryName      String    @unique
+  CreatedOn         DateTime  @default(now())
+  CreatedBy         String
+  ModifiedOn        DateTime  @default(now())
+  ModifiedBy        String
+  Products          Products[]
+}
+
+model Products {
+  ProductId         Int    @id @default(autoincrement())
+  BrandId           Int 
+  ProductName       String @unique
+  Price             Decimal
+  Quantity          Int
+  CreatedOn         DateTime @default(now())
+  CreatedBy         String
+  ModifiedOn        DateTime @default(now())
+  ModifiedBy        String
+  CategoryId        Int
+  Category          Categories @relation(fields: [CategoryId], references: [CategoryId])
+  ProductImages     ProductImages[]
+}
+
+model ProductImages {
+  ProductImageId    Int       @id @default(autoincrement())
+  ImagePath         String
+  ProductId         Int
+  IsMain            Boolean   @default(false)
+  Product           Products  @relation(fields: [ProductId], references: [ProductId])
+}
+

@@ -1,6 +1,6 @@
 
 export interface IJwtPayload {
   Username: string,
-  UserId: string,
+  UserId: number,
   Status: number,
 };
